@@ -85,8 +85,9 @@
             // productAddToolStripMenuItem
             // 
             this.productAddToolStripMenuItem.Name = "productAddToolStripMenuItem";
-            this.productAddToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.productAddToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.productAddToolStripMenuItem.Text = "Добавить";
+            this.productAddToolStripMenuItem.Click += new System.EventHandler(this.productAddToolStripMenuItem_Click);
             // 
             // sellerToolStripMenuItem1
             // 
