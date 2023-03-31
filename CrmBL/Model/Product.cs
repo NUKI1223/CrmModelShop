@@ -17,6 +17,19 @@ namespace CrmBL.Model
         public override string ToString()
         {
             return Name;
+
+        }
+        public override int GetHashCode()
+        {
+            return ProductId ;
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is Product product)
+            {
+                return ProductId.Equals(product.ProductId);
+            }
+            return false;
         }
     }
 }
