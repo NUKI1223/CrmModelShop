@@ -10,7 +10,7 @@ namespace CrmBL.Model
     {
         public int CheckId { get; set; }
         public int CustomerId { get; set; }
-        public virtual Seller Customer { get; set; }
+        public virtual Customer Customer { get; set; }
         public int SellerId { get; set; }
         public virtual Seller Seller { get; set; }
         
