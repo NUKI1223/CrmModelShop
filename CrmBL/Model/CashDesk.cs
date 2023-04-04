@@ -23,6 +23,7 @@ namespace CrmBL.Model
             Seller = seller;
             Queue = new Queue<Cart>();
             IsModel = true;
+            MaxQueueLenght = 10;
         }
         public void Enqueue(Cart cart)
         {

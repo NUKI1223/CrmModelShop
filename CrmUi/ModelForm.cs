@@ -26,10 +26,33 @@ namespace CrmUi
             {
                 var desk = new CashDeskView(model.CashDesks[i], i, 10, 26 * i);
                 cashDesks.Add(desk);
-                Controls.Add(desk.Label);
-                Controls.Add(desk.NumericUpDown);
+                Controls.Add(desk.CashDeskName);
+                Controls.Add(desk.Price);
+                Controls.Add(desk.QueueLenght);
+                Controls.Add(desk.LeaveCustomersCount);
             }
             model.Start();
+        }
+
+        private void ModelForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            model.Stop();
+        }
+
+        private void ModelForm_Load(object sender, EventArgs e)
+        {
+            numericUpDown1.Value = model.CustomerSpeed;
+            numericUpDown2.Value = model.CashDeskSpeed;
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            model.CashDeskSpeed = (int)numericUpDown2.Value;
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            model.CustomerSpeed = (int)numericUpDown1.Value;
         }
     }
 }
