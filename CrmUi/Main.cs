@@ -13,29 +13,40 @@ namespace CrmUi
     public partial class Main : Form
     {
         CrmContex db;
+        Cart cart;
+        Customer customer;
+        decimal priceResult = 0;
         public Main()
         {
             InitializeComponent();
             db = new CrmContex();
+
+            cart = new Cart(customer);
         }
 
-        
 
-        
+
+
 
         private void Main_Load(object sender, EventArgs e)
         {
-
+            Task.Run(() =>
+            {
+                listBox1.Invoke((Action)delegate
+                {
+                    UpdateLists();
+                });
+            });
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }
-        
+
         private void productToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            var catalogProduct = new Catalog<Product>(db.Products,db);
+            var catalogProduct = new Catalog<Product>(db.Products, db);
             catalogProduct.Show();
         }
 
@@ -91,6 +102,60 @@ namespace CrmUi
         {
             var form = new ModelForm();
             form.Show();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox2_DoubleClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_DoubleClick(object sender, EventArgs e)
+        {
+
+            if (listBox1.SelectedItem is Product product)
+            {
+                cart.Add(product);
+                listBox2.Items.Add(product);
+                priceResult += product.Price;
+                label2.Text = $"Общая стоимость: {priceResult}";
+            }
+
+        
+    
+            
+            
+        }
+        private void UpdateLists()
+        {
+            var items = db.Products.ToArray();
+            listBox1.Items.AddRange(items);
+            listBox2.Items.AddRange(cart.GetAll().ToArray());
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var form = new Autorization();
+            form.ShowDialog();
+            if (form.DialogResult == DialogResult.OK)
+            {
+                var temp = db.Customers.FirstOrDefault(c => c.Name.Equals(form.Customer.Name));
+                if (temp !=null)
+                {
+                    customer = temp;
+                }
+                else
+                {
+                    db.Customers.Add(form.Customer);
+                    db.SaveChanges();
+                    customer = form.Customer;
+                }
+                linkLabel1.Text = $"Здравствуйте, {customer.Name}!";
+            }
         }
     }
 }
