@@ -42,12 +42,30 @@ namespace CrmUi
             
             switch (typeof(T).Name)
             {
+
                 case nameof(Product):
+                    var formP = new ProductForm();
+                    if (formP.ShowDialog() == DialogResult.OK)
+                    {
+                        db.Products.Add(formP.Product);
+                        db.SaveChanges();
+                    }
                     break;
                 case nameof(Seller):
+                    var formS = new SellerForm();
+                    if (formS.ShowDialog() == DialogResult.OK)
+                    {
+                        db.Sellers.Add(formS.Seller);
+                        db.SaveChanges();
+                    }
                     break;
                 case nameof(Customer):
-                    
+                    var formC = new CustomerForm();
+                    if (formC.ShowDialog() == DialogResult.OK)
+                    {
+                        db.Customers.Add(formC.Customer);
+                        db.SaveChanges();
+                    }
                     break;
                 
 
@@ -56,9 +74,44 @@ namespace CrmUi
 
         private void button3_Click(object sender, EventArgs e)
         {
+            var id = dataGridView1.SelectedRows[0].Cells[0].Value;
 
+            switch (typeof(T).Name)
+            {
+
+
+                case nameof(Product):
+                    var product = set.Find(id) as Product;
+                    if (product != null)
+                    {
+                        db.Products.Remove(product);
+                        
+                        db.SaveChanges();
+                        dataGridView1.Update();
+
+                    }
+                    break;
+                case nameof(Seller):
+                    var seller = set.Find(id) as Seller;
+                    if (seller != null)
+                    {
+                        db.Sellers.Remove(seller);
+                        db.SaveChanges();
+                        dataGridView1.Update();
+
+                    }
+                    break;
+                case nameof(Customer):
+                    var customer = set.Find(id) as Customer;
+                    if (customer != null)
+                    {
+                        db.Customers.Remove(customer);
+                        db.SaveChanges();
+                        dataGridView1.Update();
+                    }
+                    break;
+            }
         }
-
         private void button2_Click_1(object sender, EventArgs e)
         {
             var id = dataGridView1.SelectedRows[0].Cells[0].Value;
