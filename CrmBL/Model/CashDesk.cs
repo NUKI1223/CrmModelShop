@@ -8,7 +8,7 @@ namespace CrmBL.Model
 {
     public class CashDesk
     {
-        CrmContex db = new CrmContex();
+        CrmContex db;
         public int Number { get; set; }
         public Seller Seller { get; set; }
         public Queue<Cart> Queue { get; set; }
@@ -17,13 +17,14 @@ namespace CrmBL.Model
         public bool IsModel { get; set; }
         public int Count => Queue.Count;
         public event EventHandler<Check> CheckClosed;
-        public CashDesk(int number, Seller seller)
+        public CashDesk(int number, Seller seller, CrmContex db)
         {
             Number = number;
             Seller = seller;
             Queue = new Queue<Cart>();
             IsModel = true;
             MaxQueueLenght = 10;
+            this.db = db?? new CrmContex();
         }
         public void Enqueue(Cart cart)
         {

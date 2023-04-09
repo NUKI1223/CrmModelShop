@@ -12,6 +12,9 @@ namespace CrmBL.Model
         Random rnd = new Random();
         Generator generator = new Generator();
         bool isWorking = false;
+        CancellationTokenSource cancellationTokenSource;
+        CancellationToken token ;
+        List<Task> tasks = new List<Task>();
         public List<CashDesk> CashDesks { get; set; } = new List<CashDesk>();
         public List<Cart> Carts { get; set; } = new List<Cart>();
         public List<Check> Checks { get; set; } = new List<Check>();
@@ -30,30 +33,34 @@ namespace CrmBL.Model
 
                 Sellers.Enqueue(seller);
             }
+            cancellationTokenSource = new CancellationTokenSource();
+            token = cancellationTokenSource.Token;
             for (int i = 0; i < 3; i++)
             {
-                CashDesks.Add(new CashDesk(CashDesks.Count, Sellers.Dequeue()));
+                CashDesks.Add(new CashDesk(CashDesks.Count, Sellers.Dequeue(), null));
             }
         }
         
         public void Start()
         {
             isWorking = true;
-            Task.Run(()=>CreateCarts(10, CustomerSpeed));
-            var cashDeskTasks = CashDesks.Select(x => new Task(() => CashDeskWork(x)));
-            foreach (var tasks in cashDeskTasks)
+            
+            tasks.Add(new Task(() => CreateCarts(10, token)));
+            tasks.AddRange(CashDesks.Select(x => new Task(() => CashDeskWork(x, token))));
+            foreach (var tasks in tasks)
             {
                 tasks.Start();
             }
-
+            
         }
         public void Stop()
         {
-            isWorking = false;
+            
+            cancellationTokenSource.Cancel();
         }
-        private void CashDeskWork(CashDesk cashDesk)
+        private void CashDeskWork(CashDesk cashDesk, CancellationToken token)
         {
-            while (isWorking)
+            while (!token.IsCancellationRequested)
             {
 
 
@@ -64,9 +71,9 @@ namespace CrmBL.Model
                 }
             }
         }
-        private void CreateCarts(int customerCounts, int sleep)
+        private void CreateCarts(int customerCounts, CancellationToken token)
         {
-            while (isWorking)
+            while (!token.IsCancellationRequested)
             {
 
 

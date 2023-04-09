@@ -15,13 +15,14 @@ namespace CrmUi
         CrmContex db;
         Cart cart;
         Customer customer;
+        CashDesk cashDesk;
         decimal priceResult = 0;
         public Main()
         {
             InitializeComponent();
             db = new CrmContex();
-
             cart = new Cart(customer);
+            cashDesk = new CashDesk(1, db.Sellers.FirstOrDefault(), db) { IsModel = false };
         }
 
 
@@ -147,6 +148,7 @@ namespace CrmUi
                 if (temp !=null)
                 {
                     customer = temp;
+                    
                 }
                 else
                 {
@@ -154,7 +156,24 @@ namespace CrmUi
                     db.SaveChanges();
                     customer = form.Customer;
                 }
+                cart.Customer = customer;
                 linkLabel1.Text = $"Здравствуйте, {customer.Name}!";
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (customer!=null)
+            {
+                cashDesk.Enqueue(cart);
+                var price = cashDesk.Dequeue();
+                listBox2.Items.Clear();
+                cart = new Cart(customer);
+                MessageBox.Show("Покупка завершена! Сумма чека: " + price, "", MessageBoxButtons.OK, MessageBoxIcon.Information );
+            }
+            else
+            {
+                MessageBox.Show("Авторизуйтесь!", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

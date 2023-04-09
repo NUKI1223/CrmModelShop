@@ -54,5 +54,10 @@ namespace CrmUi
         {
             model.CustomerSpeed = (int)numericUpDown1.Value;
         }
+
+        private void ModelForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            model.Stop();
+        }
     }
 }
